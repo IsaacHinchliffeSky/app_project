@@ -13,6 +13,9 @@ HTML_TEMPLATE = """
 <head>
 <title>TV Show Explorer</title>
     <style>
+    .show-block {
+    flex-direction: row-reverse;
+    }
         body {
             background-color: grey;
             }
@@ -58,19 +61,24 @@ HTML_TEMPLATE = """
     {% if results %}
         <h2>Results:</h2>
         {% for show in results %}
-            <div>
-                <strong>{{ show['name'] }}</strong><br>
-                Genres: {{ show['genres'] }}<br>
-                Rating: {{ show['rating'] or 'N/A' }}<br>
-                Summary: {{ show['summary'] }}<br>
+            <div class="show-block">
+                <div class="show-info">
+                    <strong>{{ show['name'] }}</strong><br>
+                    Genres: {{ show['genres'] }}<br>
+                    Rating: {{ show['rating'] or 'N/A' }}<br>
+                    Summary: {{ show['summary'] }}<br>
 
-                {% if show['officialSite'] %}
-                    officialSite: <a href="{{ show['officialSite'] }}">{{ show['officialSite'] }}</a><br><br>
-                {% else %}
-                    officialSite: Not available<br><br><br>
-                {% endif %}
-
-            </div>
+                    {% if show['officialSite'] %}
+                        officialSite: <a href="{{ show['officialSite'] }}">{{ show['officialSite'] }}</a><br><br>
+                    {% else %}
+                        officialSite: Not available<br><br><br>
+                    {% endif %}
+                </div>
+            
+            {% if show['image'] %}
+                <img class="show-image" src="{{ show['image'] }}" alt="Show Image">
+            {% endif %}
+        </div>
             
         {% endfor %}
     {% elif found == True %}
@@ -104,14 +112,15 @@ def index():
         for item in data[:5]:  # Limiting the number of results
             show = item['show']
             rating = show.get('rating', {}).get('average')
-
+            image = show.get('image')
             if rating and rating > 3:
                 results.append({
                     'name': show['name'],
                     'genres': ', '.join(show['genres']),
                     'rating': rating,
                     'summary': strip_tags(show.get('summary', '')),
-                    'officialSite': show['officialSite']
+                    'officialSite': show['officialSite'],
+                    'image': image['medium'] if image else None
                 })
 
 
