@@ -14,7 +14,13 @@ HTML_TEMPLATE = """
 <title>TV Show Explorer</title>
     <style>
     .show-block {
-    flex-direction: row-reverse;
+    display: flex; 
+    }
+    .show-image{
+    margin-left:20px;
+    }
+    .show-info {
+    flex: 1;
     }
         body {
             background-color: grey;
